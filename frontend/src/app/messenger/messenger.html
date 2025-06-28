@@ -1,0 +1,15 @@
+<div class="min-h-screen bg-gray-100 p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-4xl font-bold text-center flex-1">My SMS Messenger</h1>
+    <button
+      (click)="logout()"
+      class="text-sm bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+    >
+      Logout
+    </button>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <app-send-message (messageSent)="onMessageSent()"></app-send-message>
+    <app-message-list></app-message-list>
+  </div>
+</div>

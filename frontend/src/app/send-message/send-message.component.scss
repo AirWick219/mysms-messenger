@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+}
+
+.new-message,
+.message-history {
+  flex: 1;
+  margin: 0 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: #f9f9f9;
+}
+
+.message-box {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.timestamp {
+  float: right;
+  font-size: 0.8rem;
+  color: gray;
+}

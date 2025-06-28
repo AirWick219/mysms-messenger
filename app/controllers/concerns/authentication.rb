@@ -50,7 +50,12 @@ module Authentication
       cookies.delete(:session_id)
     end
 
-    def current_user
-      Current.session&.user
+  def current_user
+    return @current_user if defined?(@current_user)
+
+    if cookies.signed[:session_id]
+      Current.session ||= Session.find_by(id: cookies.signed[:session_id])
+      @current_user = Current.session&.user
     end
+  end
 end

@@ -1,16 +1,12 @@
 Rails.application.routes.draw do
-  resource :session
-  resources :passwords, param: :token
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  namespace :api do
+    resource :session, only: [:create, :destroy]
+    resource :password, only: [:create, :edit, :update]
+    resources :messages, only: [:index, :create]
+    post '/twilio/status', to: 'messages#twilio_status'
+  end
 
-  # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
-  # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
-
-  resource :session, only: [:create, :destroy]
-  resource :password, only: [:create, :edit, :update]
-  resources :messages, only: [:index, :create]
-  post '/twilio/status', to: 'messages#twilio_status'
 
   get '*path', to: 'static#index', constraints: ->(req) { !req.xhr? && req.format.html? }
   # Defines the root path route ("/")
