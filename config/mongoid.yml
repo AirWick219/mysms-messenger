@@ -23,4 +23,4 @@ test:
 production:
   clients:
     default:
-      uri: <%= "mongodb://#{ENV['MONGO_USERNAME']}:#{ENV['MONGO_PASSWORD']}@#{ENV['MONGO_HOST']}:#{ENV['MONGO_PORT']}/#{ENV['MONGO_DB_NAME']}" %>
+      uri: <%= ENV['MONGODB_URI'] %>
