@@ -23,5 +23,4 @@ test:
 production:
   clients:
     default:
-#      uri: <%#= ENV['MONGODB_URI'] || 'mongodb://host.docker.internal:27017/myapp_production' %>
-      uri: <%= ENV['MONGODB_URI'] %>
+      uri: <%= "mongodb://#{ENV['MONGO_USERNAME']}:#{ENV['MONGO_PASSWORD']}@#{ENV['MONGO_HOST']}:#{ENV['MONGO_PORT']}/#{ENV['MONGO_DB_NAME']}" %>
