@@ -20,3 +20,7 @@ test:
           mode: :primary
         max_pool_size: 1
 
+production:
+  clients:
+    default:
+      uri: mongodb://host.docker.internal:27017/myapp_production

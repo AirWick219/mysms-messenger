@@ -8,7 +8,9 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  get '*path', to: 'static#index', constraints: ->(req) { !req.xhr? && req.format.html? }
-  # Defines the root path route ("/")
-  # root "posts#index"
+  root to: 'home#index'
+
+  get '*path', to: 'home#index', constraints: ->(req) {
+    !req.xhr? && req.format.html? && !req.path.ends_with?('.ico')
+  }
 end

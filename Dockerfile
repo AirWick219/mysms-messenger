@@ -1,69 +1,71 @@
-# syntax=docker/dockerfile:1
-# check=error=true
+# Stage 1: Build Angular frontend
+FROM node:20 AS frontend-build
+WORKDIR /app/frontend
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t mysms_messenger .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name mysms_messenger mysms_messenger
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ .
+RUN npm run build -- --configuration production --project frontend
 
-# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
+# Stage 2: Build Rails app
+FROM ruby:3.3-slim AS rails-build
+ENV BUNDLER_VERSION=2.5.5
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.2.0
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+WORKDIR /app
 
-# Rails app lives here
-WORKDIR /rails
+# Install build dependencies
+RUN apt-get update -qq && apt-get install -y \
+  build-essential \
+  libpq-dev \
+  libyaml-dev \
+  git \
+  curl \
+  && rm -rf /var/lib/apt/lists/*
 
-# Install base packages
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+# Install bundler
+RUN gem install bundler -v "$BUNDLER_VERSION"
 
-# Throw-away build stage to reduce size of final image
-FROM base AS build
-
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
-
-# Install application gems
+# Copy and install gems
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile
+RUN bundle config set without 'development test' && \
+    bundle config set path 'vendor/bundle' && \
+    bundle install --jobs 4
 
-# Copy application code
+# Copy full Rails app code
 COPY . .
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
+# Copy Angular build output into Rails public folder
+COPY --from=frontend-build /app/frontend/dist/frontend/browser /app/public
 
+# Set env vars and precompile Rails assets
+ENV RAILS_ENV=production \
+    NODE_ENV=production \
+    RAILS_SERVE_STATIC_FILES=true \
+    RAILS_LOG_TO_STDOUT=true \
+    PATH="/app/vendor/bundle/bin:$PATH"
 
+# Stage 3: Final runtime image
+FROM ruby:3.3-slim
 
+WORKDIR /app
 
-# Final stage for app image
-FROM base
+# Install runtime dependencies only
+RUN apt-get update && apt-get install -y \
+    libpq-dev libyaml-dev \
+ && rm -rf /var/lib/apt/lists/*
 
-# Copy built artifacts: gems, application
-COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --from=build /rails /rails
+# Copy built app
+COPY --from=rails-build /app /app
 
-# Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails log tmp
-USER 1000:1000
+# Set environment
+ENV RAILS_ENV=production \
+    NODE_ENV=production \
+    RAILS_SERVE_STATIC_FILES=true \
+    RAILS_LOG_TO_STDOUT=true \
+    BUNDLE_PATH="/app/vendor/bundle" \
+    BUNDLE_WITHOUT="development:test" \
+    PATH="/app/vendor/bundle/bin:$PATH"
 
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
-
-# Start server via Thruster by default, this can be overwritten at runtime
-EXPOSE 80
-CMD ["./bin/thrust", "./bin/rails", "server"]
+EXPOSE 3000
+CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

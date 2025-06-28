@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - RAILS_ENV=production
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/myapp_production
+    depends_on:
+      - mongo
+    env_file:
+      - .env
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
