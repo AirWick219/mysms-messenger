@@ -36,12 +36,14 @@ export class Login {
       .subscribe({
         next: () => {
           this.loading = false;
+          localStorage.setItem('loggedIn', 'true');
           this.router.navigate(['/messenger']);
         },
         error: (err) => {
           this.loading = false;
           this.error = 'Invalid email or password';
           console.error('Login failed:', err);
+          localStorage.removeItem('loggedIn');
         },
       });
   }

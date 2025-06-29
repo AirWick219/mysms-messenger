@@ -18,17 +18,10 @@ export class MessengerLayout {
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
-    this.http.get<{ logged_in: boolean }>('/api/session_status', {
-      withCredentials: true,
-      headers: { 'Accept': 'application/json' }
-    }).subscribe({
-      next: (response) => {
-        if (!response.logged_in) {
-          this.router.navigate(['/login']);
-        }
-      },
-      error: () => this.router.navigate(['/login'])
-    });
+    const isLoggedIn = localStorage.getItem('loggedIn') === 'true';
+    if (!isLoggedIn) {
+      this.router.navigate(['/login']);
+    }
   }
 
   @ViewChild(MessageHistory)
@@ -41,6 +34,7 @@ export class MessengerLayout {
   logout() {
     if (this.loading) return;
     this.loading = true;
+    localStorage.removeItem('loggedIn');
 
     this.http.delete('/api/session', { withCredentials: true }).subscribe({
       next: () => {
