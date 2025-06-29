@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :api do
     resource :session, only: [:create, :destroy]
+    get 'session_status', to: 'sessions#session_status'
     resource :password, only: [:create, :edit, :update]
     resources :messages, only: [:index, :create]
     post '/twilio/status', to: 'twilio#status'

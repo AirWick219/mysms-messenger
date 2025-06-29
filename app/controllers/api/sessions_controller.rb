@@ -1,9 +1,14 @@
 module Api
   class SessionsController < ApplicationController
-    allow_unauthenticated_access only: %i[ new create ]
+    allow_unauthenticated_access only: %i[ create session_status ]
     rate_limit to: 10, within: 3.minutes, only: :create, with: -> { redirect_to new_session_url, alert: "Try again later." }
 
-    def new
+    def session_status
+      if session[:user_id].present?
+        render json: { logged_in: true }
+      else
+        render json: { logged_in: false }, status: :unauthorized
+      end
     end
 
     def create
