@@ -10,7 +10,5 @@ Rails.application.routes.draw do
 
   root to: 'home#index'
 
-  get '*path', to: 'home#index', constraints: ->(req) {
-    !req.xhr? && req.format.html? && !req.path.ends_with?('.ico')
-  }
+  get '*path', to: 'home#index', constraints: ->(req) { !req.xhr? && req.format.html? }
 end

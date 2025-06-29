@@ -6,4 +6,5 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'messenger', component: MessengerLayout },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '**', redirectTo: 'login' }
 ];
