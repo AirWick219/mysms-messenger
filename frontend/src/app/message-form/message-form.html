@@ -27,7 +27,7 @@
       #bodyInput="ngModel"
       class="w-full border rounded px-3 py-2 mb-1 resize-none h-28"
     ></textarea>
-    <div class="text-sm text-right text-gray-500 mb-2">{{ body.length || 0}}/250</div>
+    <div class="text-sm text-right text-gray-500 mb-2">{{ body?.length || 0}}/250</div>
     <div *ngIf="bodyInput.invalid && bodyInput.touched" class="text-sm text-red-600 mb-4">
       Message is required.
     </div>
