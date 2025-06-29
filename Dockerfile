@@ -35,9 +35,6 @@ RUN bundle config set without 'development test' && \
 # Copy full Rails app code
 COPY . .
 
-# Copy Angular build output into Rails public folder
-COPY --from=frontend-build /app/frontend/dist/frontend/browser /app/public
-
 # Set env vars and precompile Rails assets
 ENV RAILS_ENV=production \
     NODE_ENV=production \
@@ -57,6 +54,9 @@ RUN apt-get update && apt-get install -y \
 
 # Copy built app
 COPY --from=rails-build /app /app
+
+# Copy Angular build output into Rails public folder
+COPY --from=frontend-build /app/frontend/dist/frontend/browser /app/public
 
 # Set environment
 ENV RAILS_ENV=production \
