@@ -1,5 +1,5 @@
 class Api::TwilioController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  skip_before_action :require_authentication
   def status
     message = Message.find_by(twilio_sid: params[:MessageSid])
     message&.update(status: params[:MessageStatus])
