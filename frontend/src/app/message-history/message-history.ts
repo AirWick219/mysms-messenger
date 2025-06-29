@@ -31,6 +31,15 @@ export class MessageHistory {
       });
   }
 
+  getStatusClass(status: string) {
+    switch (status) {
+      case 'delivered': return 'text-green-600';
+      case 'failed': return 'text-red-600';
+      case 'sent': return 'text-yellow-600';
+      default: return 'text-gray-500';
+    }
+  }
+
   formatPhoneNumber(phone: string): string {
     return phone.replace(/^1?(\d{3})(\d{3})(\d{4})$/, '1-$1-$2-$3');
   }

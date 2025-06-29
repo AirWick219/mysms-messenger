@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     resource :session, only: [:create, :destroy]
     resource :password, only: [:create, :edit, :update]
     resources :messages, only: [:index, :create]
-    post '/twilio/status', to: 'messages#twilio_status'
+    post '/twilio/status', to: 'twilio#status'
   end
 
   get "up" => "rails/health#show", as: :rails_health_check
