@@ -18,8 +18,15 @@ export class MessengerLayout {
   constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit() {
-    this.http.get('/api/session_status').subscribe({
-      next: () => {},
+    this.http.get<{ logged_in: boolean }>('/api/session_status', {
+      withCredentials: true,
+      headers: { 'Accept': 'application/json' }
+    }).subscribe({
+      next: (response) => {
+        if (!response.logged_in) {
+          this.router.navigate(['/login']);
+        }
+      },
       error: () => this.router.navigate(['/login'])
     });
   }
