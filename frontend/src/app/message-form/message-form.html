@@ -1,0 +1,59 @@
+<div class="bg-white rounded-2xl shadow p-6">
+  <h2 class="text-xl font-bold mb-4">New Message</h2>
+  <form (ngSubmit)="sendMessage(messageForm)" #messageForm="ngForm">
+    <label class="block text-sm font-medium mb-1">
+      Phone Number <span class="text-red-500">*</span>
+    </label>
+    <input
+      [(ngModel)]="phoneNumber"
+      name="phoneNumber"
+      required
+      pattern="^\d{11}$"
+      #phoneInput="ngModel"
+      autofocus
+      class="w-full border rounded px-3 py-2 mb-1"
+    />
+    <div *ngIf="phoneInput.invalid && phoneInput.touched" class="text-sm text-red-600 mb-2">
+      Valid phone number is required (10 digits, e.g., 1551234567).
+    </div>
+    <label class="block text-sm font-medium mb-1">
+      Message <span class="text-red-500">*</span>
+    </label>
+    <textarea
+      [(ngModel)]="body"
+      name="body"
+      required
+      maxlength="250"
+      #bodyInput="ngModel"
+      class="w-full border rounded px-3 py-2 mb-1 resize-none h-28"
+    ></textarea>
+    <div class="text-sm text-right text-gray-500 mb-2">{{ body.length || 0}}/250</div>
+    <div *ngIf="bodyInput.invalid && bodyInput.touched" class="text-sm text-red-600 mb-4">
+      Message is required.
+    </div>
+    <div class="flex justify-between items-center">
+      <button type="button" (click)="clear()" class="text-blue-500 underline">Clear</button>
+      <button
+        type="submit"
+        [disabled]="loading || messageForm.invalid"
+        class="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 disabled:opacity-50 flex items-center justify-center"
+      >
+        <svg
+          *ngIf="loading"
+          class="animate-spin h-4 w-4 mr-2 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+          ></path>
+        </svg>
+        {{ loading ? 'Sending...' : 'Submit' }}
+      </button>
+    </div>
+  </form>
+</div>

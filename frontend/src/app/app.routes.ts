@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login';
-import { MessengerComponent } from './messenger/messenger';
+import { Login } from './login/login';
+import { MessengerLayout } from './messenger-layout/messenger-layout';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent },
-  { path: 'messenger', component: MessengerComponent },
+  { path: 'login', component: Login },
+  { path: 'messenger', component: MessengerLayout },
   { path: '', redirectTo: '/login', pathMatch: 'full' },
 ];

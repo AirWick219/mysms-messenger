@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Messenger } from './messenger';
+import { Messenger } from './messenger-layout';
 
 describe('Messenger', () => {
   let component: Messenger;
@@ -8,9 +8,8 @@ describe('Messenger', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Messenger]
-    })
-    .compileComponents();
+      imports: [Messenger],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(Messenger);
     component = fixture.componentInstance;

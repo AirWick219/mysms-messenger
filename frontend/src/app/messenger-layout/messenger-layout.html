@@ -9,7 +9,7 @@
     </button>
   </div>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <app-send-message (messageSent)="onMessageSent()"></app-send-message>
-    <app-message-list></app-message-list>
+    <app-message-form (messageSent)="onMessageSent()" />
+    <app-message-history />
   </div>
 </div>

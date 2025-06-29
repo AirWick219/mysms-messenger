@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-message-list',
+  selector: 'app-message-history',
   standalone: true,
-  templateUrl: './message-list.component.html',
-  styleUrls: ['./message-list.component.scss'],
+  templateUrl: './message-history.html',
+  styleUrls: ['./message-history.scss'],
   imports: [CommonModule],
 })
-export class MessageListComponent {
+export class MessageHistory {
   messages: any[] = [];
 
   constructor(private http: HttpClient) {

@@ -11,14 +11,19 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
 })
-export class LoginComponent {
+export class Login {
   email = '';
   password = '';
   error = '';
+  loading = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   login() {
+    if (this.loading) return;
+    this.loading = true;
+    this.error = '';
+
     this.http
       .post(
         '/api/session',
@@ -30,9 +35,11 @@ export class LoginComponent {
       )
       .subscribe({
         next: () => {
+          this.loading = false;
           this.router.navigate(['/messenger']);
         },
         error: (err) => {
+          this.loading = false;
           this.error = 'Invalid email or password';
           console.error('Login failed:', err);
         },

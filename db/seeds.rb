@@ -2,13 +2,13 @@ User.create!(
   [
     {
       email_address: "test@example.com",
-      password: "password",
-      password_confirmation: "password"
+      password: "TestUser123",
+      password_confirmation: "TestUser123"
     },
     {
       email_address: "admin@example.com",
-      password: "admin123",
-      password_confirmation: "admin123"
+      password: "adminUser123",
+      password_confirmation: "adminUser123"
     }
   ]
 )

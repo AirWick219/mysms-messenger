@@ -2,43 +2,57 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { NgForm } from '@angular/forms';
 
 @Component({
-  selector: 'app-send-message',
+  selector: 'app-message-form',
   standalone: true,
-  templateUrl: './send-message.component.html',
-  styleUrls: ['./send-message.component.scss'],
+  templateUrl: './message-form.html',
+  styleUrls: ['./message-form.scss'],
   imports: [CommonModule, FormsModule],
 })
-export class SendMessageComponent {
+export class MessageForm {
   phoneNumber = '';
-  body = '';
-  messages: any[] = [];
+  body: string = '';
+  loading = false;
 
   constructor(private http: HttpClient) {}
 
   @Output() messageSent = new EventEmitter<void>();
 
-  sendMessage() {
+  sendMessage(form: NgForm) {
+    if (form.invalid) return;
+    this.loading = true;
+
+    const phone = this.phoneNumber.trim();
+    const message = this.body.trim();
+
+    if (!phone || !message || !/^\d{11}$/.test(phone)) {
+      console.warn('Invalid input');
+      return;
+    }
+
     this.http
       .post(
         '/api/messages',
         {
-          phone_number: this.phoneNumber,
-          body: this.body,
+          phone_number: phone,
+          body: message,
         },
         {
           headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
+          withCredentials: true,
         }
       )
       .subscribe({
         next: () => {
           this.messageSent.emit();
-          this.clear();
+          form.resetForm();
+          this.loading = false;
         },
         error: (err) => {
           console.error('Failed to send message:', err);
+          this.loading = false;
         },
       });
   }
