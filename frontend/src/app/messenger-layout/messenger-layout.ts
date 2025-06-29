@@ -17,6 +17,13 @@ export class MessengerLayout {
 
   constructor(private http: HttpClient, private router: Router) {}
 
+  ngOnInit() {
+    const hasSessionId = document.cookie.includes('session_id=');
+    if (!hasSessionId) {
+      this.router.navigate(['/login']);
+    }
+  }
+
   @ViewChild(MessageHistory)
   messageList!: MessageHistory;
 
