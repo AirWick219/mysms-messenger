@@ -11,7 +11,7 @@ class TwilioClient
       from: ENV["TWILIO_PHONE"],
       to: message.phone_number,
       body: message.body,
-      status_callback: "#{ENV['API_BASE_URL']}/twilio/status"
+      status_callback: "#{ENV['API_BASE_URL']}/api/twilio/status"
     )
 
     message.update(twilio_sid: twilio_message.sid, status: "sent")
