@@ -41,6 +41,6 @@ export class MessageHistory {
   }
 
   formatPhoneNumber(phone: string): string {
-    return phone.replace(/^1?(\d{3})(\d{3})(\d{4})$/, '1-$1-$2-$3');
+    return phone.replace(/^1?(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3');
   }
 }
