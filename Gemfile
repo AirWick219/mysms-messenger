@@ -4,7 +4,7 @@ gem "rails", "~> 8.0.2"
 gem "puma", ">= 5.0"
 
 gem "mongoid", "~> 8.0"
-gem "bcrypt", "~> 3.1.7"
+gem "bcrypt", "~> 3.1.21"
 gem "twilio-ruby"
 gem "bootsnap", require: false
 
